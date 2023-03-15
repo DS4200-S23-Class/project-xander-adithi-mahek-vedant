@@ -4,28 +4,49 @@
 <head>
     <meta charset=utf-8/>
     <link rel="stylesheet" type="text/css" href="style.css">
-
-    <title>TODO: Add short title here</title>
+    <script src="js/d3.v6.1.1/d3.min.js"></script>
+    <title>TODO: DS4200 Project</title>
 </head>
 
 
 <body>
 
-    <h1>TODO: Add project title here</h1>
+    <h1>TODO: Preparing to run the San Francisco Marathon</h1>
 
     <div>
         <h2>Motivation</h2>
-        TODO: Add motivation / use case here 
+        <p> Our project is aimed at helping new runners prepare for a marathon by providing statistics of past marathon participants. 
+            This will aid in their training by giving them goals to work up to based on their age and gender. 
+            The intended users of this visualization tool will ideally be someone who is looking to run the San Francisco marathon and/or someone 
+            who wants to analyze or predict marathon results based on demographics such as age, sex, pace, and country. 
+    </p>
+        
+ 
     </div>
 
     <div>
         <h2>Background</h2>
-        TODO: Add link to report, demo video, link to data etc. here  
+        <div>
+            <h3>Data</h3>
+            <p>Our data tool visualizes past results of the San Francisco marathon and lets a user input their age and gender and be able to 
+                see a distribution of race paces for their category. The data was sourced from a github repo of a past marathon participant. 
+                They originally scraped the data from a website that had past race results. There are some ethical considerations with this 
+                data since it has identifying details like name, age, and city. However, since all of this data was available publicly and 
+                is race times and nothing too personal. There were some missing values so to deal with that we dropped any rows with missing 
+                values to keep data integrity. 
+            </p>
+            <a href="https://github.com/deedy/sf-marathon/blob/master/data/full_marathon_2008_2021.csv">original data source</a>
+        </div>
+        
     </div>
 
     <div>
         <h2>Visualization</h2>
-        TODO: Build your visualization tool here  
+        
+        <div class="flex">
+            <div id="vis1"></div>
+            <div id="vis2"></div>
+        </div>
     </div>
 
     <div>
@@ -33,7 +54,7 @@
         TODO: Cite resources used here   
     </div>
 
-
+<script src="js/main.js"></script>
 </body>
 
 </html>
