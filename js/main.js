@@ -20,26 +20,7 @@ const FRAME2 = d3.select("#vis2")
     .attr("class", "frame");
 
 d3.csv("data/full_marathon_2008_2021.csv").then((data) => {
-
-    // box and whisker type visual 
-
-// function to determine the average pace for an age group (go through all people in each age group and avg)
-function determineAverage(ageGroup) {   
-     for (const row of data) {
-        // M 30-34
-        row[16]
-        if (row[16])
-
-     }
-
-
-}
-
-// function to determine the min pace for an age group
-
-// function to determine the max pace for an age group
-
-  // Creates the X axis
+  // Defines the X axis
   const MAX_X = d3.max(data, (d) => {return parseFloat(d.Time_Mins); });
   const X_SCALE = d3.scaleLinear()
     .domain([0, MAX_X])
@@ -52,19 +33,20 @@ function determineAverage(ageGroup) {
   .thresholds(MAX_X.ticks(70)); // then the numbers of bins
   const bins = histogram(data);
 
-  // Creates the Y axis
+  // Defines the Y axis
   const MAX_Y = d3.max(bins, function(d) { return d.length; });
   const Y_SCALE = d3.scaleLinear()
     .domain([0, MAX_Y])
     .range([VIS_HEIGHT, 0]);
 
-  svg.append("g")
+  // Creates both X and Y Axis' on the Graph
+  FRAME2.append("g")
     .attr("transform", "translate(0," + height + ")")
     .call(d3.axisBottom(X_SCALE))
     .call(d3.axisLeft(Y_SCALE));
 
-  // append the bar rectangles to the svg element
-  svg.selectAll("rect")
+  // Append the bar rectangles to the Graph
+  FRAME2.selectAll("rect")
   .data(bins)
   .enter()
   .append("rect")
