@@ -13,3 +13,15 @@ h1 {
     justify-content: space-between;
     text-align: center;
   }
+
+.bar {
+    fill:#69b3a2
+}
+
+  /* tooltip styling */
+  .tooltip {
+    position: absolute;
+    background-color: lightgray;
+    padding: 7px;
+    width: 150px;
+    }
