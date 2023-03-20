@@ -19,7 +19,7 @@ const FRAME2 = d3.select("#vis2")
     .attr("width", FRAME_WIDTH)
     .attr("class", "frame");
 
-d3.csv("data/full_marathon_2008_2021.csv").then((data) => {
+d3.csv("data/filtered_marathon_data.csv").then((data) => {
   // Defines the X axis
   const MAX_X = d3.max(data, (d) => {return parseFloat(d.Time_Mins); });
   const X_SCALE = d3.scaleLinear()
