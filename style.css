@@ -12,16 +12,20 @@ h1 {
     flex-wrap: nowrap;
     justify-content: space-between;
     text-align: center;
-  }
+}
+
+.col {
+    width: 50%
+}
 
 .bar {
     fill: blueviolet;
 }
 
   /* tooltip styling */
-  .tooltip {
+.tooltip {
     position: absolute;
     background-color: lightgray;
     padding: 7px;
     width: 150px;
-    }
+}

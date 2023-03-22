@@ -116,6 +116,82 @@ FRAME2.append("text")
 
 });  
 
+d3.csv("data/box_plot_data.csv").then((data) => {
+  // var y = d3.scaleLinear()
+  // .domain([min,max])
+  // .range([height, 0]);
+
+  // // make y axis
+  // FRAME1.append("g")
+  // .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
+  // .call(d3.axisLeft(y).ticks(10))
+  // .attr("font-size", "20px");
+
+  var margin = {top: 10, right: 30, bottom: 30, left: 80},
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+  // would be read from the user input button
+  const ageGroup = "F 01-19";
+
+  for (var i = 0; i < data.length; i++) {
+    if(data[i].Group == ageGroup) {
+      min = data[i].Min;
+      max = data[i].Max;
+      median = data[i].Median;
+      q3 = data[i].Upper_Quartile;
+      q1 = data[i].Lower_Quartile;
+      console.log(min);
+    }
+  }
+  
+// Show the Y scale
+var y = d3.scaleLinear()
+  .domain([0,20])
+  .range([height, 0]);
+FRAME1.call(d3.axisLeft(y));
+console.log(min);
+console.log(max);
+
+// a few features for the box
+var center = 200
+var width = 100
+
+// Show the main vertical line
+FRAME1
+  .append("line")
+  .attr("x1", center)
+  .attr("x2", center)
+  .attr("y1", y(min))
+  .attr("y2", y(max))
+  .attr("stroke", "black")
+
+  // Show the box
+FRAME1
+.append("rect")
+  .attr("x", center - width/2)
+  .attr("y", y(q3) )
+  .attr("height", (y(q1)-y(q3)) )
+  .attr("width", width )
+  .attr("stroke", "black")
+  .style("fill", "#69b3a2")
+
+  // show median, min and max horizontal lines
+FRAME1
+.selectAll("toto")
+.data([min, median, max])
+.enter()
+.append("line")
+  .attr("x1", center-width/2)
+  .attr("x2", center+width/2)
+  .attr("y1", function(d){ return(y(d))} )
+  .attr("y2", function(d){ return(y(d))} )
+  .attr("stroke", "black")
+
+  //https://d3-graph-gallery.com/graph/boxplot_horizontal.html
+
+});
+
 
 
 
