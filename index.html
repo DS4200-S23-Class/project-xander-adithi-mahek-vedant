@@ -11,19 +11,18 @@
 
 <body>
 
-    <h1>TODO: Preparing to run the San Francisco Marathon</h1>
+    <h1>Preparing to Run the San Francisco Marathon</h1>
 
     <div>
         <h2>Motivation</h2>
         <p> Our project is aimed at helping new runners prepare for a marathon by providing statistics of past marathon participants. 
             This will aid in their training by giving them goals to work up to based on their age and gender. 
             The intended users of this visualization tool will ideally be someone who is looking to run the San Francisco marathon and/or someone 
-            who wants to analyze or predict marathon results based on demographics such as age, sex, pace, and country. 
+            who wants to analyze or predict marathon results based on demographics such as age, sex, pace, and country. The user will be able to
+            assess how people in their sex and age group category have performed in the past so they can work towards a desired pace and finishing time.
     </p>
         
- 
     </div>
-
     <div>
         <h2>Background</h2>
         <div>
@@ -35,22 +34,26 @@
                 is race times and nothing too personal. There were some missing values so to deal with that we dropped any rows with missing 
                 values to keep data integrity. 
             </p>
-            <a href="https://github.com/deedy/sf-marathon/blob/master/data/full_marathon_2008_2021.csv">original data source</a>
+            <a href="https://github.com/deedy/sf-marathon/blob/master/data/full_marathon_2008_2021.csv">Original data source</a>
         </div>
         
     </div>
 
     <div>
-        <h2>Visualization</h2>
-        
+        <h2>Visualizations</h2>
         <div class="flex">
             <div class="col">
-                <h3>Box Plot</h3>
+                <h3>Box Plot of Average Pace(mins) for a Particular Sex-Age-Group Category</h3>
+                <h6>We are using the category "F 01-19" as an example for this visual to show we have made some progress on the second visual encoding as per the requirements of
+                    this assignment, however, in the final visual we will take in actual user input (sex and age group) and the box plot will dynamically change based on
+                    the user's information (sex and age group). This visual will also eventually be linked to the histogram on the right,
+                    where we will highlight on the histogram the min, max, median, upper quartile, and lower quartile finishing times in mins calculated based on the
+                    min, max, median, upper quartile, and lower quartile average paces in mins in the boxplot.</h6>
                 <br>
                 <div id="vis1"></div>
             </div>
             <div class="col">
-                <h3>Histogram</h3>
+                <h3>Histogram of Finishing Times(mins)</h3>
                 <br>
                 <div id="vis2"></div>
             </div>
@@ -59,7 +62,14 @@
 
     <div>
         <h2>Acknowledgements</h2>
-        TODO: Cite resources used here   
+        <ul>
+            <li><a href="https://d3-graph-gallery.com/boxplot">https://d3-graph-gallery.com/boxplot</a></li>
+            <li><a href="https://d3js.org/">https://d3js.org/</a></li>
+            <li><a href="https://d3-graph-gallery.com/graph/boxplot_horizontal.html">https://d3-graph-gallery.com/graph/boxplot_horizontal.html</a></li>
+            <li><a href="https://d3-graph-gallery.com/graph/histogram_basic.html">https://d3-graph-gallery.com/graph/histogram_basic.html</a></li>
+            <li><a href="https://d3-graph-gallery.com/graph/interactivity_tooltip.html">https://d3-graph-gallery.com/graph/interactivity_tooltip.html</a></li>
+            <li><a href="https://www.geeksforgeeks.org/d3-js-transform-translate-function/">https://www.geeksforgeeks.org/d3-js-transform-translate-function/</a></li>
+        </ul>   
     </div>
 
 <script src="js/main.js"></script>

@@ -3,7 +3,7 @@ body {
     padding: 20px;
 }
 
-h1, h3 {
+h1, h2, h3, h5, h6 {
     text-align: center;
 }
 
@@ -23,7 +23,7 @@ h1, h3 {
     fill: blueviolet;
 }
 
-  /* tooltip styling */
+/* tooltip styling */
 .tooltip {
     position: absolute;
     background-color: lightgray;

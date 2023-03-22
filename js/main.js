@@ -6,14 +6,14 @@ const AXIS_MARGINS = {left: 50, top: 50};
 const VIS_HEIGHT = FRAME_HEIGHT - (MARGINS.top + MARGINS.bottom + AXIS_MARGINS.top);
 const VIS_WIDTH = FRAME_WIDTH - (MARGINS.left + MARGINS.right + AXIS_MARGINS.left);
 
-// create svg in vis1 div
+// Create svg in vis1 div (our second visual encoding)
 const FRAME1 = d3.select("#vis1")
     .append("svg")
     .attr("height", FRAME_HEIGHT)
     .attr("width", FRAME_WIDTH)
     .attr("class", "frame");
 
-// create svg in vis2 div
+// Create svg in vis2 div (first first encoding that is complete for this assingment)
 const FRAME2 = d3.select("#vis2")
     .append("svg")
     .attr("height", FRAME_HEIGHT)
@@ -21,6 +21,7 @@ const FRAME2 = d3.select("#vis2")
     .attr("class", "frame");
 
 d3.csv("data/filtered_marathon_data.csv").then((data) => {
+  // Print at least 10 lines of data to the console (here we are printing the entire data set)
   console.log(data);
 
   // Defines the X axis
@@ -43,13 +44,13 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
     .domain([0, MAX_Y])
     .range([VIS_HEIGHT, 0]);
 
-  // make x axis
+  // Make x axis
   FRAME2.append("g")
     .attr("transform", "translate(" + (MARGINS.left + AXIS_MARGINS.left) + "," + (VIS_HEIGHT + MARGINS.top) + ")")
     .call(d3.axisBottom(X_SCALE).ticks(10))
     .attr("font-size", "20px");
 
-  // make y axis
+  // Make y axis
   FRAME2.append("g")
     .attr("transform", "translate(" + (MARGINS.left + AXIS_MARGINS.left) + "," + MARGINS.top + ")")
     .call(d3.axisLeft(Y_SCALE).ticks(10))
@@ -60,7 +61,7 @@ FRAME2.append("text")
   .attr("text-anchor", "end")
   .attr("x", FRAME_WIDTH / 2 + 150)
   .attr("y", FRAME_HEIGHT - 20)
-  .text("Finish Time (in Minutes)")
+  .text("Finish Time(mins)")
   .attr("font-size", "20px");
 
 // Add Y axis label:
@@ -111,54 +112,62 @@ FRAME2.append("text")
     .on("mouseover", hoverToolTip)
     .on("mouseleave", mouseOutToolTip)
     .on("mousemove", moveToolTip);
-
-  // Highlight Mean, Median, Quartiles on Histogram when Selected on Box and Whisker Plot as the interaction
-
 });  
 
+// Reading a csv with a table of summary statistics for each sex-age-group category calculated
 d3.csv("data/box_plot_data.csv").then((data) => {
   const BOX_WIDTH = 200;
   const CENTER = 200;
 
-  // would be read from the user input button
+  // Would actuallt be read from the user input (sex and age group)
+  // hard coding here because the second visual encoding does not need
+  // to be fully complete for this assignment
   const ageGroup = "F 01-19";
 
+  // Iterate through the table to retrieve all of the needed values
   for (var i = 0; i < data.length; i++) {
     if(data[i].Group == ageGroup) {
       min = data[i].Min;
       max = data[i].Max;
       median = data[i].Median;
+      // upper quartile
       q3 = data[i].Upper_Quartile;
+      // lower quartile
       q1 = data[i].Lower_Quartile;
     }
   }
   
-  // Show the Y scale
-  const y = d3.scaleLinear()
-    .domain([0,20])
+  // Y scale
+  const Y = d3.scaleLinear()
+    .domain([min, max])
     .range([VIS_HEIGHT, 0]);
-  FRAME1.call(d3.axisLeft(y));
 
-  // Show the main vertical line
+  // Add Y axis ticks and labels
+  var AXIS = FRAME1.append("g").attr("transform", "translate(20,0)");
+  var AXISLEFT = d3.axisLeft(Y);
+    AXIS.append("g")
+      .call(AXISLEFT);
+
+  // Vertical line
   FRAME1
     .append("line")
     .attr("x1", CENTER)
     .attr("x2", CENTER)
-    .attr("y1", y(min))
-    .attr("y2", y(max))
+    .attr("y1", Y(min))
+    .attr("y2", Y(max))
     .attr("stroke", "black")
 
-  // Show the box
+  // Box with the quartiles
   FRAME1
   .append("rect")
     .attr("x", CENTER - BOX_WIDTH/2)
-    .attr("y", y(q3))
-    .attr("height", (y(q1)-y(q3)) )
+    .attr("y", Y(q3))
+    .attr("height", (Y(q1)-Y(q3)) )
     .attr("width", BOX_WIDTH )
     .attr("stroke", "black")
-    .style("fill", "#69b3a2")
+    .style("fill", "#90eeec")
 
-  // show median, min and max horizontal lines
+  // Median, minimum, and maximum
   FRAME1
   .selectAll("toto")
   .data([min, median, max])
@@ -166,12 +175,9 @@ d3.csv("data/box_plot_data.csv").then((data) => {
   .append("line")
     .attr("x1", CENTER-BOX_WIDTH/2)
     .attr("x2", CENTER+BOX_WIDTH/2)
-    .attr("y1", function(d){ return(y(d))} )
-    .attr("y2", function(d){ return(y(d))} )
+    .attr("y1", function(d){ return(Y(d))} )
+    .attr("y2", function(d){ return(Y(d))} )
     .attr("stroke", "black")
-
-  //https://d3-graph-gallery.com/graph/boxplot_horizontal.html
-
 });
 
 
