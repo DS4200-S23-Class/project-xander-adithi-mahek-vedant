@@ -21,6 +21,8 @@ const FRAME2 = d3.select("#vis2")
     .attr("class", "frame");
 
 d3.csv("data/filtered_marathon_data.csv").then((data) => {
+  console.log(data);
+
   // Defines the X axis
   const MAX_X = d3.max(data, (d) => {return parseFloat(d.Time_Mins); });
   const MIN_X = d3.min(data, (d) => {return parseFloat(d.Time_Mins); });
@@ -43,45 +45,32 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
 
   // make x axis
   FRAME2.append("g")
-    .attr("transform", "translate(" + MARGINS.left + "," + (VIS_HEIGHT + MARGINS.top) + ")")
+    .attr("transform", "translate(" + (MARGINS.left + AXIS_MARGINS.left) + "," + (VIS_HEIGHT + MARGINS.top) + ")")
     .call(d3.axisBottom(X_SCALE).ticks(10))
     .attr("font-size", "20px");
 
   // make y axis
   FRAME2.append("g")
-    .attr("transform", "translate(" + MARGINS.left + "," + MARGINS.top + ")")
-    .call(d3.axisLeft(Y_SCALE).ticks(8))
+    .attr("transform", "translate(" + (MARGINS.left + AXIS_MARGINS.left) + "," + MARGINS.top + ")")
+    .call(d3.axisLeft(Y_SCALE).ticks(10))
     .attr("font-size", "20px");
-
-  // create svg element, respecting margins
-FRAME2
-.append("svg")
-  .attr("width", VIS_WIDTH + MARGINS.left + MARGINS.right)
-  .attr("height", VIS_HEIGHT + MARGINS.top + MARGINS.bottom)
-.append("g")
-  .attr("transform",
-        "translate(" + MARGINS.left + "," + MARGINS.top + ")");
 
 // Add X axis label:
 FRAME2.append("text")
   .attr("text-anchor", "end")
   .attr("x", FRAME_WIDTH / 2 + 150)
   .attr("y", FRAME_HEIGHT - 20)
-  .text("TIME TO COMPLETE THE RACE (in Minutes)");
+  .text("Finish Time (in Minutes)")
+  .attr("font-size", "20px");
 
-// // Y axis label:
-// FRAME2.append("text")
-//   .attr("text-anchor", "end")
-//   .attr("x", AXIS_MARGINS.left)
-//   .attr("y", AXIS_MARGINS.top)
-//   .attr("transform", "rotate(-90)")
-//   .text("Y axis title")
-
-
-
-
-
-
+// Add Y axis label:
+FRAME2.append("text")
+  .attr("text-anchor", "end")
+  .attr("x", -FRAME_HEIGHT / 2 + AXIS_MARGINS.left)
+  .attr("y", AXIS_MARGINS.top)
+  .attr("transform", "rotate(-90)")
+  .text("# Of Participants")
+  .attr("font-size", "20px");
 
   // Append the bar rectangles to the Graph
   FRAME2.selectAll("rect")
@@ -89,7 +78,7 @@ FRAME2.append("text")
     .enter()
     .append("rect")
     .attr("x", d => { return X_SCALE(d.x0) + MARGINS.left; })
-    .attr("transform", function(d) { return "translate(" + 0 + "," + (Y_SCALE(d.length) + MARGINS.bottom) + ")"; })
+    .attr("transform", function(d) { return "translate(" + AXIS_MARGINS.left + "," + (Y_SCALE(d.length) + MARGINS.bottom) + ")"; })
     .attr("width", function(d) { return X_SCALE(d.x1) - X_SCALE(d.x0) -1 ; })
     .attr("height", function(d) { return VIS_HEIGHT - Y_SCALE(d.length); })
     .attr("class", "bar");
@@ -123,7 +112,7 @@ FRAME2.append("text")
     .on("mouseleave", mouseOutToolTip)
     .on("mousemove", moveToolTip);
 
-  // Highlight Mean, Median, Quartiles on Histogram when Selected on Box and Whisker Plot
+  // Highlight Mean, Median, Quartiles on Histogram when Selected on Box and Whisker Plot as the interaction
 
 });  
 
