@@ -6,27 +6,116 @@ const AXIS_MARGINS = {left: 50, top: 50};
 const VIS_HEIGHT = FRAME_HEIGHT - (MARGINS.top + MARGINS.bottom + AXIS_MARGINS.top);
 const VIS_WIDTH = FRAME_WIDTH - (MARGINS.left + MARGINS.right + AXIS_MARGINS.left);
 
-// Create svg in vis1 div (our second visual encoding)
-const FRAME1 = d3.select("#vis1")
+
+// Reading a csv with a table of summary statistics for each sex-age-group category calculated
+d3.csv("data/box_plot_data.csv").then((data) => {  
+
+  // Create first instance of an svg in vis1 div
+  const FRAME1 = d3.select("#vis1")
     .append("svg")
     .attr("height", FRAME_HEIGHT)
     .attr("width", FRAME_WIDTH)
     .attr("class", "frame");
 
-// Create svg in vis2 div (first first encoding that is complete for this assingment)
-const FRAME2 = d3.select("#vis2")
-    .append("svg")
-    .attr("height", FRAME_HEIGHT)
-    .attr("width", FRAME_WIDTH)
-    .attr("class", "frame");
+  const BOX_WIDTH = 200;
+  const CENTER = 200;
+  let ageGroup;
+
+  // function to add new point to the scatter
+  function drawPlot() {
+    // Removes existing visualization in #vis1
+    d3.select('svg').remove();
+
+    // Create new svg in vis1 div
+    const FRAME1 = d3.select("#vis1")
+      .append("svg")
+      .attr("height", FRAME_HEIGHT)
+      .attr("width", FRAME_WIDTH)
+      .attr("class", "frame");
+
+    let sex = document.getElementById("sex").value;
+    let age = document.getElementById("age").value;
+    let group = sex + " " + age;
+    // Iterate through the table to retrieve all of the needed values
+    for (let i = 0; i < data.length; i++) {
+      if(data[i].Group == group) {
+        min = data[i].Min;
+        max = data[i].Max;
+        median = data[i].Median;
+        // upper quartile
+        q3 = data[i].Upper_Quartile;
+        // lower quartile
+        q1 = data[i].Lower_Quartile;
+      }
+    }
+
+  // Y scale
+  const Y = d3.scaleLinear()
+    .domain([min, max])
+    .range([VIS_HEIGHT, 0]);
+
+  // Add Y axis ticks and labels
+  let AXIS = FRAME1.append("g")
+    .attr("transform", "translate(50,0)");
+
+  let AXISLEFT = d3.axisLeft(Y);
+  
+  AXIS.append("g")
+      .call(AXISLEFT);
+
+  // Vertical line
+  FRAME1
+    .append("line")
+    .attr("x1", CENTER)
+    .attr("x2", CENTER)
+    .attr("y1", Y(min))
+    .attr("y2", Y(max))
+    .attr("stroke", "black");
+
+  // Box with the quartiles
+  FRAME1
+  .append("rect")
+    .attr("x", CENTER - BOX_WIDTH/2)
+    .attr("y", Y(q3))
+    .attr("height", (Y(q1)-Y(q3)) )
+    .attr("width", BOX_WIDTH )
+    .attr("stroke", "black")
+    .style("fill", "#90eeec");
+
+  // Median, minimum, and maximum
+  FRAME1
+  .selectAll("toto")
+  .data([min, median, max])
+  .enter()
+  .append("line")
+    .attr("x1", CENTER-BOX_WIDTH/2)
+    .attr("x2", CENTER+BOX_WIDTH/2)
+    .attr("y1", function(d){ return(Y(d))} )
+    .attr("y2", function(d){ return(Y(d))} )
+    .attr("stroke", "black");
+  }
+
+  // event listener for adding and clicking the points in vis1
+  d3.selectAll("#submit").on("click", drawPlot);
+  
+});
+
+
 
 d3.csv("data/filtered_marathon_data.csv").then((data) => {
+
+  // Create svg in vis2 div
+  const FRAME2 = d3.select("#vis2")
+    .append("svg")
+    .attr("height", FRAME_HEIGHT)
+    .attr("width", FRAME_WIDTH)
+    .attr("class", "frame");
+
   // Print at least 10 lines of data to the console (here we are printing the entire data set)
   console.log(data);
 
   // Defines the X axis
   const MAX_X = d3.max(data, (d) => {return parseFloat(d.Time_Mins); });
-  const MIN_X = d3.min(data, (d) => {return parseFloat(d.Time_Mins); });
   const X_SCALE = d3.scaleLinear()
     .domain([0, MAX_X])
     .range([0, VIS_WIDTH]);
@@ -56,22 +145,22 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
     .call(d3.axisLeft(Y_SCALE).ticks(10))
     .attr("font-size", "20px");
 
-// Add X axis label:
-FRAME2.append("text")
-  .attr("text-anchor", "end")
-  .attr("x", FRAME_WIDTH / 2 + 150)
-  .attr("y", FRAME_HEIGHT - 20)
-  .text("Finish Time(mins)")
-  .attr("font-size", "20px");
+  // Add X axis label:
+  FRAME2.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", FRAME_WIDTH / 2 + 150)
+    .attr("y", FRAME_HEIGHT - 20)
+    .text("Finish Time (mins)")
+    .attr("font-size", "20px");
 
-// Add Y axis label:
-FRAME2.append("text")
-  .attr("text-anchor", "end")
-  .attr("x", -FRAME_HEIGHT / 2 + AXIS_MARGINS.left)
-  .attr("y", AXIS_MARGINS.top)
-  .attr("transform", "rotate(-90)")
-  .text("# Of Participants")
-  .attr("font-size", "20px");
+  // Add Y axis label:
+  FRAME2.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", -FRAME_HEIGHT / 2 + AXIS_MARGINS.left)
+    .attr("y", AXIS_MARGINS.top)
+    .attr("transform", "rotate(-90)")
+    .text("# Of Participants")
+    .attr("font-size", "20px");
 
   // Append the bar rectangles to the Graph
   FRAME2.selectAll("rect")
@@ -114,90 +203,6 @@ FRAME2.append("text")
     .on("mousemove", moveToolTip);
 });  
 
-// Reading a csv with a table of summary statistics for each sex-age-group category calculated
-d3.csv("data/box_plot_data.csv").then((data) => {
-  const BOX_WIDTH = 200;
-  const CENTER = 200;
-
-  // Would actuallt be read from the user input (sex and age group)
-  // hard coding here because the second visual encoding does not need
-  // to be fully complete for this assignment
-  let ageGroup;
-
-  // function to add new point to the scatter
-  function defineSexAgeGroup() {
-
-    // Create svg in vis1 div (our second visual encoding)
-    // const FRAME1 = d3.select("#vis1")
-    // .append("svg")
-    // .attr("height", FRAME_HEIGHT)
-    // .attr("width", FRAME_WIDTH)
-    // .attr("class", "frame");
-
-    ageGroup = document.getElementById("sex-age").value;
-    // Iterate through the table to retrieve all of the needed values
-    for (var i = 0; i < data.length; i++) {
-      if(data[i].Group == ageGroup) {
-        min = data[i].Min;
-        max = data[i].Max;
-        median = data[i].Median;
-        // upper quartile
-        q3 = data[i].Upper_Quartile;
-        // lower quartile
-        q1 = data[i].Lower_Quartile;
-      }
-    }
-
-  // var svg = d3.select("svg");
-  // svg.selectAll("*").remove();
-
-  // Y scale
-  const Y = d3.scaleLinear()
-  .domain([min, max])
-  .range([VIS_HEIGHT, 0]);
-
-  // Add Y axis ticks and labels
-  var AXIS = FRAME1.append("g").attr("transform", "translate(20,0)");
-  var AXISLEFT = d3.axisLeft(Y);
-    AXIS.append("g")
-      .call(AXISLEFT);
-
-  // Vertical line
-  FRAME1
-    .append("line")
-    .attr("x1", CENTER)
-    .attr("x2", CENTER)
-    .attr("y1", Y(min))
-    .attr("y2", Y(max))
-    .attr("stroke", "black")
-
-  // Box with the quartiles
-  FRAME1
-  .append("rect")
-    .attr("x", CENTER - BOX_WIDTH/2)
-    .attr("y", Y(q3))
-    .attr("height", (Y(q1)-Y(q3)) )
-    .attr("width", BOX_WIDTH )
-    .attr("stroke", "black")
-    .style("fill", "#90eeec")
-
-  // Median, minimum, and maximum
-  FRAME1
-  .selectAll("toto")
-  .data([min, median, max])
-  .enter()
-  .append("line")
-    .attr("x1", CENTER-BOX_WIDTH/2)
-    .attr("x2", CENTER+BOX_WIDTH/2)
-    .attr("y1", function(d){ return(Y(d))} )
-    .attr("y2", function(d){ return(Y(d))} )
-    .attr("stroke", "black")
-  }
-
-  // event listener for adding and clicking the points in vis1
-  d3.selectAll("#submit").on("click", defineSexAgeGroup);
-  
-});
 
 
 

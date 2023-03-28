@@ -3,8 +3,22 @@ body {
     padding: 20px;
 }
 
-h1, h2, h3, h5, h6 {
+h1, h2, h3, h4, h5, h6, .center {
     text-align: center;
+}
+
+button {
+    width: 100px;
+    margin: auto;
+}
+
+.inputs {
+    width: 25%;
+    margin: auto;
+    background-color: lightgray;
+    border-radius: 10px;
+    border: 2px solid darkgray;
+    padding-bottom: 10px;
 }
 
 .flex {
