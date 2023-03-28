@@ -122,25 +122,39 @@ d3.csv("data/box_plot_data.csv").then((data) => {
   // Would actuallt be read from the user input (sex and age group)
   // hard coding here because the second visual encoding does not need
   // to be fully complete for this assignment
-  const ageGroup = "F 01-19";
+  let ageGroup;
 
-  // Iterate through the table to retrieve all of the needed values
-  for (var i = 0; i < data.length; i++) {
-    if(data[i].Group == ageGroup) {
-      min = data[i].Min;
-      max = data[i].Max;
-      median = data[i].Median;
-      // upper quartile
-      q3 = data[i].Upper_Quartile;
-      // lower quartile
-      q1 = data[i].Lower_Quartile;
+  // function to add new point to the scatter
+  function defineSexAgeGroup() {
+
+    // Create svg in vis1 div (our second visual encoding)
+    // const FRAME1 = d3.select("#vis1")
+    // .append("svg")
+    // .attr("height", FRAME_HEIGHT)
+    // .attr("width", FRAME_WIDTH)
+    // .attr("class", "frame");
+
+    ageGroup = document.getElementById("sex-age").value;
+    // Iterate through the table to retrieve all of the needed values
+    for (var i = 0; i < data.length; i++) {
+      if(data[i].Group == ageGroup) {
+        min = data[i].Min;
+        max = data[i].Max;
+        median = data[i].Median;
+        // upper quartile
+        q3 = data[i].Upper_Quartile;
+        // lower quartile
+        q1 = data[i].Lower_Quartile;
+      }
     }
-  }
-  
+
+  // var svg = d3.select("svg");
+  // svg.selectAll("*").remove();
+
   // Y scale
   const Y = d3.scaleLinear()
-    .domain([min, max])
-    .range([VIS_HEIGHT, 0]);
+  .domain([min, max])
+  .range([VIS_HEIGHT, 0]);
 
   // Add Y axis ticks and labels
   var AXIS = FRAME1.append("g").attr("transform", "translate(20,0)");
@@ -178,6 +192,11 @@ d3.csv("data/box_plot_data.csv").then((data) => {
     .attr("y1", function(d){ return(Y(d))} )
     .attr("y2", function(d){ return(Y(d))} )
     .attr("stroke", "black")
+  }
+
+  // event listener for adding and clicking the points in vis1
+  d3.selectAll("#submit").on("click", defineSexAgeGroup);
+  
 });
 
 
