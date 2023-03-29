@@ -40,13 +40,13 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
   FRAME2.append("g")
     .attr("transform", "translate(" + (MARGINS.left + AXIS_MARGINS.left) + "," + (VIS_HEIGHT + MARGINS.top) + ")")
     .call(d3.axisBottom(X_SCALE).ticks(10))
-    .attr("font-size", "20px");
+    .attr("font-size", "15px");
 
   // Make y axis
   FRAME2.append("g")
     .attr("transform", "translate(" + (MARGINS.left + AXIS_MARGINS.left) + "," + MARGINS.top + ")")
     .call(d3.axisLeft(Y_SCALE).ticks(10))
-    .attr("font-size", "20px");
+    .attr("font-size", "15px");
 
   // Add X axis label:
   FRAME2.append("text")
@@ -54,7 +54,7 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
     .attr("x", FRAME_WIDTH / 2 + 150)
     .attr("y", FRAME_HEIGHT - 20)
     .text("Finish Time (mins)")
-    .attr("font-size", "20px");
+    .attr("font-size", "15px");
 
   // Add Y axis label:
   FRAME2.append("text")
@@ -63,7 +63,7 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
     .attr("y", AXIS_MARGINS.top)
     .attr("transform", "rotate(-90)")
     .text("# Of Participants")
-    .attr("font-size", "20px");
+    .attr("font-size", "15px");
 
   // Append the bar rectangles to the Graph
   FRAME2.selectAll("rect")
