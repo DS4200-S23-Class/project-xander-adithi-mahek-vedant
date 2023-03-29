@@ -10,10 +10,88 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
   // Print at least 10 lines of data to the console (here we are printing the entire data set)
   console.log(data);
 
+  // Create svg in vis2 div
+  const FRAME2 = d3.select("#vis2")
+    .append("svg")
+    .attr("height", FRAME_HEIGHT)
+    .attr("width", FRAME_WIDTH)
+    .attr("class", "frame");
+
+  // Defines the X axis
+  const MAX_X = d3.max(data, (d) => { return parseFloat(d.Time_Mins); });
+  const X_SCALE = d3.scaleLinear()
+    .domain([0, MAX_X])
+    .range([0, VIS_WIDTH]);
+
+  // Get the bins from the histogram to get the Y axis
+  const histogram = d3.histogram()
+    .value(function (d) { return parseFloat(d.Time_Mins); })   // I need to give the vector of value
+    .domain(X_SCALE.domain())  // then the domain of the graphic
+    .thresholds(X_SCALE.ticks(70)); // then the numbers of bins
+  const bins = histogram(data);
+
+  // Defines the Y axis
+  const MAX_Y = d3.max(bins, function (d) { return d.length; });
+  const Y_SCALE = d3.scaleLinear()
+    .domain([0, MAX_Y])
+    .range([VIS_HEIGHT, 0]);
+
+  // Make x axis
+  FRAME2.append("g")
+    .attr("transform", "translate(" + (MARGINS.left + AXIS_MARGINS.left) + "," + (VIS_HEIGHT + MARGINS.top) + ")")
+    .call(d3.axisBottom(X_SCALE).ticks(10))
+    .attr("font-size", "20px");
+
+  // Make y axis
+  FRAME2.append("g")
+    .attr("transform", "translate(" + (MARGINS.left + AXIS_MARGINS.left) + "," + MARGINS.top + ")")
+    .call(d3.axisLeft(Y_SCALE).ticks(10))
+    .attr("font-size", "20px");
+
+  // Add X axis label:
+  FRAME2.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", FRAME_WIDTH / 2 + 150)
+    .attr("y", FRAME_HEIGHT - 20)
+    .text("Finish Time (mins)")
+    .attr("font-size", "20px");
+
+  // Add Y axis label:
+  FRAME2.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", -FRAME_HEIGHT / 2 + AXIS_MARGINS.left)
+    .attr("y", AXIS_MARGINS.top)
+    .attr("transform", "rotate(-90)")
+    .text("# Of Participants")
+    .attr("font-size", "20px");
+
+  // Append the bar rectangles to the Graph
+  FRAME2.selectAll("rect")
+    .data(bins)
+    .enter()
+    .append("rect")
+    .attr("x", d => { return X_SCALE(d.x0) + MARGINS.left; })
+    .attr("transform", function (d) { return "translate(" + AXIS_MARGINS.left + "," + (Y_SCALE(d.length) + MARGINS.bottom) + ")"; })
+    .attr("width", function (d) { return X_SCALE(d.x1) - X_SCALE(d.x0) - 1; })
+    .attr("height", function (d) { return VIS_HEIGHT - Y_SCALE(d.length); })
+    .attr("class", "bar");
+
   // Create first instance of an svg in vis1 div
   const FRAME1 = d3.select("#vis1").append("svg");
   const BOX_WIDTH = 200;
   const CENTER = 250;
+
+  // Function to Highlight the median of the Vis1 on Vis2
+  function connectGraphs(median) {
+    let bars = FRAME2.selectAll(".bar");
+    let prevMedian = FRAME2.select(".median");
+    const finishTime = median*26.2;
+    const upperBin = 5*(Math.ceil(Math.abs(finishTime/5)));
+    const lowerBin = 5*(Math.floor(Math.abs(finishTime/5)));
+    const medianBin = bars.filter(bin => (bin.x0 == lowerBin && bin.x1 == upperBin));
+    prevMedian.classed("median", false);
+    medianBin.classed("median", true);
+  }
 
   // function to draw the box plot with the given inputs
   function drawPlot() {
@@ -127,77 +205,12 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
     d3.selectAll(".box")
       .on("mouseover", hoverToolTip1)
       .on("mouseleave", mouseOutToolTip1)
-      .on("mousemove", moveToolTip1);
+      .on("mousemove", moveToolTip1)
+      .on("click", connectGraphs(med));
   }
 
   // Event listener for adding and clicking the points in vis1
   d3.selectAll("#submit").on("click", drawPlot);
-
-  // Create svg in vis2 div
-  const FRAME2 = d3.select("#vis2")
-    .append("svg")
-    .attr("height", FRAME_HEIGHT)
-    .attr("width", FRAME_WIDTH)
-    .attr("class", "frame");
-
-  // Defines the X axis
-  const MAX_X = d3.max(data, (d) => { return parseFloat(d.Time_Mins); });
-  const X_SCALE = d3.scaleLinear()
-    .domain([0, MAX_X])
-    .range([0, VIS_WIDTH]);
-
-  // Get the bins from the histogram to get the Y axis
-  const histogram = d3.histogram()
-    .value(function (d) { return parseFloat(d.Time_Mins); })   // I need to give the vector of value
-    .domain(X_SCALE.domain())  // then the domain of the graphic
-    .thresholds(X_SCALE.ticks(70)); // then the numbers of bins
-  const bins = histogram(data);
-
-  // Defines the Y axis
-  const MAX_Y = d3.max(bins, function (d) { return d.length; });
-  const Y_SCALE = d3.scaleLinear()
-    .domain([0, MAX_Y])
-    .range([VIS_HEIGHT, 0]);
-
-  // Make x axis
-  FRAME2.append("g")
-    .attr("transform", "translate(" + (MARGINS.left + AXIS_MARGINS.left) + "," + (VIS_HEIGHT + MARGINS.top) + ")")
-    .call(d3.axisBottom(X_SCALE).ticks(10))
-    .attr("font-size", "20px");
-
-  // Make y axis
-  FRAME2.append("g")
-    .attr("transform", "translate(" + (MARGINS.left + AXIS_MARGINS.left) + "," + MARGINS.top + ")")
-    .call(d3.axisLeft(Y_SCALE).ticks(10))
-    .attr("font-size", "20px");
-
-  // Add X axis label:
-  FRAME2.append("text")
-    .attr("text-anchor", "end")
-    .attr("x", FRAME_WIDTH / 2 + 150)
-    .attr("y", FRAME_HEIGHT - 20)
-    .text("Finish Time (mins)")
-    .attr("font-size", "20px");
-
-  // Add Y axis label:
-  FRAME2.append("text")
-    .attr("text-anchor", "end")
-    .attr("x", -FRAME_HEIGHT / 2 + AXIS_MARGINS.left)
-    .attr("y", AXIS_MARGINS.top)
-    .attr("transform", "rotate(-90)")
-    .text("# Of Participants")
-    .attr("font-size", "20px");
-
-  // Append the bar rectangles to the Graph
-  FRAME2.selectAll("rect")
-    .data(bins)
-    .enter()
-    .append("rect")
-    .attr("x", d => { return X_SCALE(d.x0) + MARGINS.left; })
-    .attr("transform", function (d) { return "translate(" + AXIS_MARGINS.left + "," + (Y_SCALE(d.length) + MARGINS.bottom) + ")"; })
-    .attr("width", function (d) { return X_SCALE(d.x1) - X_SCALE(d.x0) - 1; })
-    .attr("height", function (d) { return VIS_HEIGHT - Y_SCALE(d.length); })
-    .attr("class", "bar");
 
   // ToolTip
   const TOOLTIP2 = d3.select("#vis2")
@@ -227,6 +240,4 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
     .on("mouseover", hoverToolTip2)
     .on("mouseleave", mouseOutToolTip2)
     .on("mousemove", moveToolTip2);
-
-    console.log(med);
 });

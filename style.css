@@ -37,6 +37,10 @@ button {
     fill: blueviolet;
 }
 
+.median {
+    fill: lightgreen !important;
+}
+
 /* tooltip styling */
 .tooltip {
     position: absolute;
