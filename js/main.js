@@ -20,6 +20,8 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
     d3.select('#tooltip1').remove();
     d3.select('#svg2').remove();
     d3.select('#tooltip2').remove();
+    d3.select('#warning')
+      .html("You can click on the box in the left visualization to highlight the median in the right visualization");
 
   // --------------------------  CREATING VIS1 -------------------------- //
 
@@ -167,7 +169,7 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
     .attr("class", "bar");
 
   // --------------------------  CREATING TOOLTIPS -------------------------- //
-  
+
     const TOOLTIP1 = d3.select("#vis1")
       .append("div")
       .attr("id", "tooltip1")

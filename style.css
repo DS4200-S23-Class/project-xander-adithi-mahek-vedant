@@ -21,6 +21,10 @@ button {
     padding-bottom: 10px;
 }
 
+#warning {
+    color:red;
+}
+
 .flex {
     display: flex;
     flex-direction: row;
