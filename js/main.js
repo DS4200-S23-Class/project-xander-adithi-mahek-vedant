@@ -227,9 +227,10 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
       .on("mousemove", moveToolTip2);
 
     // --------------------------  CONNECTING GRAPHS -------------------------- //
-
+    
     // Function to Highlight the median of the Vis1 on Vis2
     function connectGraphs(median) {
+      console.log("called");
       let bars = FRAME2.selectAll(".bar");
       let prevMedian = FRAME2.select(".median");
       const finishTime = median*26.2;
@@ -240,7 +241,8 @@ d3.csv("data/filtered_marathon_data.csv").then((data) => {
       medianBin.classed("median", true);
     }
 
-    d3.select(".box").on("click", connectGraphs(med));
+    d3.select(".box").on("click", function() {
+      connectGraphs(med);});
   }
 
   // Event listener for changing vis1 upon clicking submit
