@@ -7,6 +7,10 @@ h1, h2, h3, h4, h5, h6, .center {
     text-align: center;
 }
 
+.center {
+    text-align: center;
+}
+
 button {
     width: 100px;
     margin: auto;
